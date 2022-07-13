@@ -1,0 +1,58 @@
+{% extends 'admin.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+    <a class="btn btn-info" href="{% url 'home' %}">
+        <i class='bx bx-log-out' id="logout"></i>
+        <span class="home">home</span>
+    </a>
+    <div>
+        <form action="{% url 'exisitingdboy' %}" method="post">
+            {% csrf_token %}
+            <label for="">Search Delivery Boy by username :</label>
+            <input type="text" name="dboy">
+            <br>
+            <input type="submit" class="btn btn-info" value="Submit" class="">
+        </form>
+    </div>
+
+    {% for j in db %}
+    <table class="table table-dark">
+            <tr>
+                <td>Name</td>
+                <td>Last Name</td>
+                <td>Username</td>
+                <td>Gender</td>
+                <td>Age</td>
+                <td>Phone Number</td>
+                <td>Location</td>
+                <td>Group</td>
+                <td>Assigned Order D</td>
+                <td>Email</td>
+                <td>Password</td>
+                <td>Function</td>
+            </tr>
+            <tr>
+                <td>{{j.DName}}</td>
+                <td>{{j.DLast_Name}}</td>
+                <td>{{j.Dusername}}</td>
+                <td>{{j.Dgender}}</td>
+                <td>{{j.Dage}}</td>
+                <td>{{j.DPhone_Number}}</td>
+                <td>{{j.DLocation}}</td>
+                <td>{{j.group}}</td>
+                <td>{{j.order}}</td>
+                <td>{{j.Demail}}</td>
+                <td>{{j.Dpassword}}</td>
+                <td>
+                <form action="{% url 'DeleteAssignedOrders' %}" method="post">
+                    {% csrf_token %}
+                <button type="submit"  name="bt" class="btn btn-info" value="{{j.Dusername}}">Remove Assign Orders</button>
+                </form>
+                </td>
+            </tr>
+    </table>
+    {% endfor %}
+</body>
+{% endblock %}

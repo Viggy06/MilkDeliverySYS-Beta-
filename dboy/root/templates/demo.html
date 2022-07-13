@@ -1,0 +1,116 @@
+{% extends 'admin.html' %}
+
+
+{% block tt %}
+<title>Edit order data!</title>
+{% endblock %}
+
+{% block content %}
+<div id="Rightbar" class="mt-3 mx-3">  
+    <table>
+        <tr class="d-flex bg-dark table-header" >
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="CustomerID" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Customer_Name" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Address" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Phone_No" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Plan" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Total_milk" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Company_name" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Bottles" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Group" disabled> </td>
+            <td><input class="bg-dark text-light py-3 fw-bold " type="text" value="Option" disabled> </td>
+        </tr>
+    </table>
+    
+    {% for dt in d %}
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <table>
+            <tr id="{{ dt.CustomerID.value }}" class="d-flex">
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom ml-2"> {{ dt.CustomerID }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.Customer_Name }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.Address }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom">  {{ dt.Phone_No }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.Plan }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.Total_milk }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.Company_name }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.bottles }}</td>
+                <td class="{{ dt.CustomerID.value }} dis align-text-bottom"> {{ dt.Group }}</td>
+                <td style="display: flex">
+                    <button class="btn btn-info m-1" onclick="ed('{{ dt.CustomerID.value }}')">Edit</button>
+                    <input class="btn btn-success m-1" type="submit" value="Save" formaction="{% url 'sb' dt.CustomerID.value %}">
+                </td>
+            </tr>
+        </table>
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block css %}
+<style>
+    #Rightbar {
+        overflow: scroll;
+    }
+
+    #Rightbar::-webkit-scrollbar{
+        width: 0;
+    }
+
+    .text-center {
+        margin-top: 50px;
+    }
+
+    table,
+    th,
+    td {
+        border-left: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+
+    .dis {
+        pointer-events: none;
+    }
+
+    input{
+        border:none;
+        width: 150px;
+        padding: 0px 5px 0px 5px;
+
+    }
+    .teble-header td input{
+        color:white;
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+    function ed(c) {
+        cl = document.getElementById(c);
+        var s = cl.cells[9].innerHTML;
+
+        if (s.includes('Edit')) {
+            s = s.replace('Edit', 'Update');
+            cl.cells[9].innerHTML = s;
+
+            for (let i = 0; i < 9; i++) {
+                cl.cells[i].style.pointerEvents = "auto";
+            }
+        }
+
+        else if (s.includes('Update')) {
+            s = s.replace('Update', 'Edit');
+            cl.cells[9].innerHTML = s;
+
+            for (let i = 0; i < 9; i++) {
+                cl.cells[i].style.pointerEvents = "none";
+            }
+
+        }
+    }
+
+    function dd(cl) { alert(cl) }
+
+</script>
+{% endblock %}

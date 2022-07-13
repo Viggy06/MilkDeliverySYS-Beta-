@@ -1,0 +1,182 @@
+
+{% extends 'admin.html' %}
+{% block tt %}
+<title>Assign the orders</title>
+{% endblock %}
+
+{% block hd %} Assign Orders to Delivery Boy {% endblock %}
+{% block nt %} Assign orders {% endblock %}
+
+
+{% block content %}
+<div id="Rightbar">
+    <h3 class="text-center mt-3">{{ error }}</h3>
+<form method="POST">
+    {% csrf_token %}
+    {% if gp %}
+    <div class="text-center mt-3">
+        <h3>{{ gp }} group is selected!</h3>
+    </div>
+    <input type="hidden" name="s_group" value="{{ gp }}">
+    {% else %}
+    <div class="text-center mt-3">
+        <p id="Dropdown">Select Group</p>
+        <select class="p-2 m-2 rounded-pill text-center" name="dropdown">
+            <option>---Groups---</option>
+            {% for op in ops %}
+            <option value={{ op.0 }}>{{ op.0 }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" class="act btn btn-warning rounded-pill" value="Assign Orders">
+    </div>
+    {% endif %}
+
+    {% if boys %}
+    <div class="text-center mt-3">
+        <select class="p-2 m-2 rounded-pill text-center" name="boysdropdown">
+            <option>View Delivery boy's</option>
+            {% for op in boys %}
+            <option value={{ op.0 }}>{{ op.0 }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" class="btn btn-success rounded-pill" id="save_data" value="Save Data"
+            formaction="{% url 'ods' %}" formmethod="post" onclick="ch_orders()">
+        {% endif %}
+        <input id="sort_order" type="hidden" name="sort_order" value="{{ ini_ord }}">
+        <input id="Checked_value" type="hidden" name="Checked_value" value="">
+    </div>
+</form>
+</div>
+<br>
+
+{% if op %}
+<div class="text-center">
+    <button type="button" class="act btn btn-warning rounded-pill mb-3" onclick="drag()">can't drag</button>
+</div>
+<table>
+    <div class="content">
+        {% for dt in op %}
+        <tr>
+
+            <div class="dragit d-flex" data-lookup="{{ folder.lookup_id }}" draggable="false" id="{{ dt.CustomerID}}">
+                <div>
+                    <input type="checkbox" class="me-3" name="dboy_name" id="Selections" value='sel'>
+                </div>
+                <div class="drag-data">
+                    <span>{{ dt.CustomerID }}</span> 
+                    {{ dt.Customer_Name }} {{ dt.Address }} {{ dt.Phone_No }} {{ dt.Plan }} {{ dt.Total_milk }} {{ dt.Company_name }} {{ dt.Group }}
+                    <span class="bg-warning mx-2 py-1 px-3 rounded-pill">{{ dt.dboy }}</span>
+                </div>
+            </div>
+        </tr>
+
+        {% endfor %}
+    </div>
+</table>
+{% endif %}
+{% endblock %}
+
+{% block css %}
+<style>
+    .dragit {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 2px solid darkcyan;
+        background-color: lightcyan;
+    }
+
+    .content {
+        margin: 10px;
+        padding: 10px;
+        border: 5px solid blueviolet;
+        max-width : 100vw !important;
+        max-height : 50vh !important;
+        overflow : scroll !important;
+    }
+
+
+    .content::-webkit-scrollbar {
+        width: 0;
+    }
+
+    .dragging {
+        opacity: 0.5;
+        border: 2px solid darksalmon;
+        background-color: lightsalmon;
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+    var content = document.querySelectorAll(".content")
+    var dragit = document.querySelectorAll(".dragit")
+
+    function ch_orders(){
+        let ch = document.querySelectorAll('#Selections');
+        const chs = [];
+        for (let i of ch) {
+            if (i.checked) chs.push(1);
+            else chs.push(0);
+        }
+        document.getElementById('Checked_value').value = chs;
+        console.log(chs);
+    }
+
+
+    dragit.forEach(emt => {
+        emt.addEventListener('dragstart', () => {
+            emt.classList.add("dragging")
+        })
+
+        emt.addEventListener('dragend', () => {
+            emt.classList.remove("dragging")
+        })
+    });
+
+    content.forEach(emt => {
+        for (let i = 0; i < dragit.length; i++) emt.appendChild(dragit[i])
+        emt.addEventListener('dragover', e => {
+            e.preventDefault()
+            let pos = downElement(emt, e.clientY)
+            let el = document.querySelector('.dragging')
+            if (pos == null) emt.appendChild(el)
+            else emt.insertBefore(el, pos)
+        })
+    });
+
+    function downElement(emt, y) {
+        let els = [...emt.querySelectorAll(".dragit:not(.dragging)")]
+
+        return els.reduce((val, nd) => {
+            let box = nd.getBoundingClientRect()
+            let offset = y - (box.top + box.height)
+            if (offset < 0 && offset > val.offset) return { offset: offset, element: nd }
+            else return val
+        }, { offset: Number.NEGATIVE_INFINITY }).element
+    }
+
+    function sortorder() {
+        let od = document.querySelectorAll('.drag-data');
+        ods = [];
+        for (let i of od) ods.push(i.children[0].textContent)
+        document.getElementById('sort_order').value = ods;
+    }
+
+    function drag() {
+        var bt = document.querySelector(".act");
+
+        if (bt.innerHTML.includes('can')) {
+            bt.innerHTML = 'Drag';
+            for (let i = 0; i < dragit.length; i++) dragit[i].setAttribute("draggable", true);
+            document.getElementById("save_data").setAttribute("disabled", 'disabled');
+        }
+        else {
+            bt.innerHTML = "can't drag";
+            for (let i = 0; i < dragit.length; i++) dragit[i].setAttribute("draggable", false);
+            sortorder();
+            document.getElementById("save_data").removeAttribute("disabled");
+        }
+    }
+</script>
+{% endblock %}

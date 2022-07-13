@@ -1,0 +1,150 @@
+{% extends 'admin.html' %}
+{% load static %}
+{% block content %}
+
+<br>
+<form method="post" action="{% url 'orderhistoryf1' %}">
+    {% csrf_token %}
+    <label>Start Date:</label>
+    <!-- <input type="text" name="startdate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+    <input type="date" name="startdate">
+    <label>End Date:</label>
+    <input type="date" name="enddate">
+    <!-- <input type="text" name="enddate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+    <input class="btn btn-success" type="submit" value="Submit">
+</form>
+<br>
+<form method="post" action="{% url 'orderhistoryf2' %}">
+    {% csrf_token %}
+    <label>Start Date:</label>
+    <!-- <input type="text" name="startdate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+    <input type="date" name="startdate">
+    <label>End Date:</label>
+    <input type="date" name="enddate">
+    <!-- <input type="text" name="enddate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+
+    <select class='btn btn-info' name="dboy" id="dboy">
+        <option selected>Select Delivery Boy</option>
+        {% for i in duser %}
+        <option value={{ i.0 }}>{{ i.0 }}</option>
+        {% endfor %}
+    </select>
+    <input class="btn btn-success" type="submit" value="Submit">
+    <br>
+</form>
+<br>
+
+<form method="post" action="{% url 'orderhistoryf3' %}">
+    {% csrf_token %}
+    <label>Start Date:</label>
+    <!-- <input type="text" name="startdate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+    <input type="date" name="startdate">
+    <label>End Date:</label>
+    <input type="date" name="enddate">
+    <!-- <input type="text" name="enddate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+
+    <select class='btn btn-info' name="Group" id="Group">
+        <option selected>Select Group</option>
+        {% for i in group %}
+        <option value={{ i.0 }}>{{ i.0 }}</option>
+        {% endfor %}
+    </select>
+    <input class="btn btn-success" type="submit" value="Submit">
+    <br>
+</form>
+<br>
+<form method="post" action="{% url 'orderhistoryf4' %}">
+    {% csrf_token %}
+    <label>Start Date:</label>
+    <!-- <input type="text" name="startdate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+    <input type="date" name="startdate">
+    <label>End Date:</label>
+    <input type="date" name="enddate">
+    <!-- <input type="text" name="enddate" date-format="DD MM YYYY" placeholder="DD/MM/YYYY"> -->
+    
+    <select class='btn btn-info' name="Company" id="Group">
+        <option selected>Select Commpany</option>
+        {% for i in company %}
+        <option value={{ i }}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <input class="btn btn-success" type="submit" value="Submit">
+    <br>
+</form>
+
+<br>
+{% if res %}
+<table class="table table-dark">
+    <tr>
+        <th scope="col">CustomerID</th>
+        <th scope="col">Customer</th>
+        <th scope="col">Address</th>
+        <th scope="col">Mobile No</th>
+        <th scope="col">Plan</th>
+        <th scope="col">Liters</th>
+        <th scope="col">Group</th>
+        <th scope="col">Company name</th>
+        <th scope="col">Date</th>
+        <th scope="col">Delivery Boy</th>
+        <th scope="col">Status</th>
+        <th scope="col">Bottels</th>
+        <th scope="col">Bottels Remaining</th>
+        <th scope="col">Reason</th>
+
+    </tr>
+    {% for i in res %}
+    <tbody>
+        <tr>
+            <td>{{i.CustomerID}}</td>
+            <td>{{i.Customer_Name}}</td>
+            <td>{{i.Address}}</td>
+            <td>{{i.Phone_No}}</td>
+            <td>{{i.Plan}}</td>
+            <td>{{i.Total_milk}}</td>
+            <td>{{i.ogroup}}</td>
+            <td>{{i.Company_name}}</td>
+            <td>{{i.Ddate}}</td>
+            <td>{{i.DeliveryBoy}}</td>
+            <td>{{i.status}}</td>
+            <td>{{i.bottles}}</td>
+            <td>{{i.remaining_bottles}}</td>
+            <td>{{i.cust_comment}}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+{% else %}
+<center>
+    <p style="color: white;">DATA NOT FOUND</p>
+</center>
+
+{% endif %}
+
+<br>
+
+{% if dboykms %}
+<table class="caption">
+    <tr>
+
+        <th scope="col">Delivery Boy Username</th>
+        <th scope="col">Ddate</th>
+        <th scope="col">Startride</th>
+        <th scope="col">Endride</th>
+        <th scope="col">Totalride</th>
+    </tr>
+
+    {% for i in dboykms %}
+    <tbody>
+        <tr>
+            <td>{{i.Dusername}}</td>
+            <td>{{i.Ddate}}</td>
+            <td>{{i.startride}}</td>
+            <td>{{i.endride}}</td>
+            <td>{{i.totalride}}</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

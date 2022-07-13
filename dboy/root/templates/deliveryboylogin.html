@@ -1,0 +1,94 @@
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        h2{
+            text-align: center;
+            color:blueviolet;
+        }
+        body {
+            font-family: sans-serif;
+            background: white;
+        }
+        table{
+            border: 1px solid black;
+        }
+        input{
+            border-radius:5pt;
+            border-color: aquamarine;
+        }
+        button{
+            size: 20px;
+            background-color: aqua;
+            border-radius: 3px;
+            border-color: aqua;
+            
+        }
+    </style>
+</head>
+{% for i in user %}
+<h2>Hello {{i.Dusername}}</h2>
+<br>
+<form method="post" action="{% url 'dboyride' %}" id="data-form">
+    {% csrf_token %}
+    <label>Startride</label>
+    <input type="text" name="startride" placeholder="startride" required>
+    <label>Endride</label>
+    <input type="text" name="endride" placeholder="endride" required>
+
+    <button id="sb" class="btn btn-info" value="{{i.Dusername}}" name="user">Submit</button>
+    {% endfor %}
+</form>
+
+<div>
+{% if data %}
+<table class="table table-bordered">
+    <th>
+        <tr style="color:blueviolet">
+            <td>CustomerID</td>
+            <td>Customer Name</td>
+            <td>Address</td>
+            <td>Phone_No</td>
+            <td>Plan</td>
+            <td>Quantity(Liters)</td>
+            <td>Company_name</td>
+            <td>Status</td>  
+        </tr>
+    </th>
+
+    {% for j in data %}
+    <tr>
+        <td>{{j.CustomerID}}</td>
+        <td>{{j.Customer_Name}}</td>
+        <td>{{j.Address}}</td>
+        <td>{{j.Phone_No}}</td>
+        <td>{{j.Plan}}</td>
+        <td>{{j.Total_milk}}</td>
+        <td>{{j.Company_name}}</td>
+        <form action="{% url 'getpost' %}" method="post">
+            {% csrf_token %}
+            <td>
+                {% if j.Company_name == 'Whitelifefarm' or j.Company_name == 'Vedaaz' %}
+                    <input type="text" name="bottles"  placeholder="bottles" {{j.status}} size="5" required>
+                    <input type="text" name="comment"  placeholder="comment" {{j.status}} size="5">
+                {% else %}
+                    <input type="text" name="comment"  placeholder="comment" {{j.status}} size="12">
+                {% endif %}     
+                <button = type="submit" name="dstatus" value="{{j.CustomerID}}*{{j.Customer_Name}}*{{j.Address}}*{{j.Phone_No}}*{{j.Plan}}*{{j.Total_milk}}*{{j.Company_name}}*{{j.Group}}*{{duser}}*Delivered" {{j.status}}>Delivered</button>
+                <button = type="submit" name="dstatus" value="{{j.CustomerID}}*{{j.Customer_Name}}*{{j.Address}}*{{j.Phone_No}}*{{j.Plan}}*{{j.Total_milk}}*{{j.Company_name}}*{{j.Group}}*{{duser}}*Not-Delivered" {{j.status}}>Not Delivered</button>
+            </td>
+        </form>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+</div>
+
+<div>
+<br>
+
+<form action="{% url 'logout' %}" >
+    <input type="submit" class="btn btn-success" value="Logout">
+</form>
+</div>

@@ -1,0 +1,151 @@
+{% extends 'admin.html' %}
+
+{% block tt %}
+<title>Upload your files!</title>
+{% endblock %}
+
+{% block content %}
+
+<div id="Rightbar" class="container w-50">
+    <h3>Upload your excel file</h3>
+    <div class="drag-area d-flex text-center">
+        <div class="icon">
+            <i class="fa-solid fa-file-arrow-up" id="DragDrop"></i>
+        </div>
+        <span class="header">Drag and drop</span>
+        <span class="header"> or <span class="button">browse</span> </span>
+        
+    </div>
+    <form id="FileData" enctype="multipart/form-data" class="text-center" method="post"> 
+        {% csrf_token %}
+        <input type="file" id="fileInput" name="myfile" multiple style="display: none;">
+        <input type="submit" class="btn btn-success"  value="Save file" id="SaveFile" disabled>
+    </form>
+</div>
+{% endblock %}
+
+{% block css %}
+<style>
+body{background-color:lightgray;}
+
+.container{
+    background-color:white;
+    margin-top: 50px;
+    max-height: 440px;
+    border-radius: 50px;
+    padding: 30px 50px;
+}
+
+.drag-area{
+    border: 3px dashed darkgray;
+    height : 275px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 15px;
+}
+
+.active{
+    border: 3px solid darkgray;
+}
+
+h3{
+    margin-bottom: 25px;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.drag-area .icon{
+    font-weight: 400;
+    font-size: 50px;
+    color: blue;
+    cursor: pointer;
+}
+
+.drag-area .button{
+    font-weight: 500;
+    font-size: 20px;
+    color: blue;
+    cursor: pointer;
+}
+
+@media (max-width : 992px) {
+    #Rightbar { 
+        min-width: 75%;
+        max-height: 500px;
+        border-radius: 50px;
+        padding: 30px 30px;
+    }    
+}
+
+
+@media (max-width : 400px) {
+    #Rightbar { 
+        min-width: 85%;
+        max-height: 500px;
+        border-radius: 40px;
+        padding: 20px 20px;
+    }    
+}
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+{{ block.super }}
+
+let bttn = document.querySelector(".button");
+let dragdrop = document.getElementById("DragDrop");
+let ipfile = document.getElementById("fileInput");
+
+bttn.onclick = () => { 
+    ipfile.click();
+    dragging.classList.add('active');
+};
+
+dragdrop.onclick = () => { 
+    ipfile.click();
+    dragging.classList.add('active');
+};
+
+ipfile.addEventListener("change", function() {
+    document.getElementById('fileInput').files = this.files;
+    console.log(document.getElementById("SaveFile"))
+    document.getElementById("SaveFile").removeAttribute("disabled");
+})
+
+
+const dragging = document.querySelector(".drag-area");
+const headertxt = document.querySelector(".header");
+let file;
+
+dragging.addEventListener('dragover', () => {
+    event.preventDefault();
+    console.log(dragging.classList)
+    dragging.classList.add('active');
+    headertxt.textContent = "Upload here";
+});
+
+dragging.addEventListener('dragleave', () => {
+    dragging.classList.remove('active');
+    headertxt.textContent = "Drag and drop";
+});
+
+dragging.addEventListener('drop', (evt) => {
+    evt.preventDefault();
+    
+    // file = evt.dataTransfer.files;
+    // for (let i of file) {
+    //     if (i.name.include == "xlsx") document.getElementById("SaveFile").removeAttribute("disabled");
+    //     else {
+    //         alert(i.name + " is wrong input file. plese import only .xlsx files.")
+    //     }
+    // }
+    // console.log(FileType)
+    document.getElementById('fileInput').files = evt.dataTransfer.files;
+    console.log(document.getElementById("SaveFile"))
+    document.getElementById("SaveFile").removeAttribute("disabled");
+});
+
+</script>
+{% endblock %}

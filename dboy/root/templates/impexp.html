@@ -1,0 +1,129 @@
+{% extends 'admin.html' %}
+
+
+{% block tt %}
+<title>Edit order data!</title>
+{% endblock %}
+
+{% block content %}
+<div id="Rightbar">
+    
+    <form action="{% url 'cao' %}" method="post">
+        {% csrf_token %}
+        <div class="w-100 my-3 text-center">
+            <input class="btn btn-success px-5 py-2" type="submit" value="Clear Assign Order">
+        </div>
+    </form>
+
+    <form action="{% url 'sb' %}" method="post" novalidate>
+        {% csrf_token %}
+        <div class="w-100 my-3 text-center">
+            <input class="btn btn-success px-5 py-2" type="submit" value="Save">
+        </div>
+        <div id="datatable">
+            <table class="table table-dark">
+                <tr>
+                    <th> CustomerID</th>
+                    <th> Customer_Name</th>
+                    <th> Address</th>
+                    <th> Phone_No</th>
+                    <th> Plan</th>
+                    <th> Total_milk</th>
+                    <th> Company_name</th>
+                    <th> Bottles</th>
+                    <th> Group</th>
+                    <th> Option</th>
+                </tr>
+
+                {% for dt in d %}
+                {% csrf_token %}
+                <tr id="{{ dt.CustomerID.value }}">
+                    <td> {{ dt.CustomerID }}</td>
+                    <td> {{ dt.Customer_Name }}</td>
+                    <td> {{ dt.Address }}</td>
+                    <td> {{ dt.Phone_No }}</td>
+                    <td> {{ dt.Plan }}</td>
+                    <td> {{ dt.Total_milk }}</td>
+                    <td> {{ dt.Company_name }}</td>
+                    <td> {{ dt.bottles }}</td>
+                    <td> {{ dt.Group }}</td>
+                    <td style="pointer-events: auto;">
+                        <button class="btn btn-primary m-1" onclick="ed('{{ dt.CustomerID.value }}')">Edit</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block css %}
+<style>
+    #datatable {
+        max-height : 75vh !important;
+        overflow: scroll;
+    }
+
+    table{
+        border-bottom: 3px solid black !important;
+        margin-left: 30px !important;
+    }
+    tr {
+        pointer-events: none;
+    }
+    th{
+        background-color:black !important;
+        color: white !important;
+        padding: 15px 0px !important;
+        text-align: center;
+        border: 3px solid white;
+    }
+    input[type=text], input[type=number],textarea{
+        background-color : transparent !important;
+        border : none !important;
+        height : 75px !important;
+        overflow : hidden !important;
+        color : white;
+        font-size: 12px;
+        font-weight : bolder;
+
+    }
+    textarea{
+        text-align: start;
+    }
+
+    table th:nth-child(1) input, table td:nth-child(1) input{
+        max-width: 120px !important;
+        overflow: auto;
+    }
+    table th:nth-child(2) input, table td:nth-child(2) input{
+        max-width: 150px !important;
+        overflow: auto;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+    function ed(c) {
+        cl = document.getElementById(c);
+        var s = cl.cells[9].innerHTML;
+
+        if (s.includes('Edit')) {
+            s = s.replace('Edit', 'Update');
+            cl.cells[9].innerHTML = s;
+            cl.style.pointerEvents = "auto";
+            cl.classList.add("table-active");
+        }
+        else if (s.includes('Update')) {
+            s = s.replace('Update', 'Edit');
+            cl.cells[9].innerHTML = s;
+            cl.style.pointerEvents = "none";
+            cl.classList.remove("table-active");
+        }
+    }
+</script>
+{% endblock %}
